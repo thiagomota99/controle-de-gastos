@@ -2,7 +2,7 @@ package br.com.thgyn.test;
 
 import java.util.Scanner;
 
-import br.com.thgyn.dao.categoria.CategoriaDAO;
+import br.com.thgyn.dao.CategoriaDAO;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.services.CategoriaService;
 
@@ -16,17 +16,23 @@ public class TesteCategoria {
 		System.out.println("O que deseja fazer? ");
 		System.out.println("1 - Adicionar");
 		System.out.println("2 - Listar");
-		System.out.println("3 - Sair");
+		System.out.println("3 - Lista uma Categoria");
+		System.out.println("4 - Sair");
 		System.out.print("R: ");
 		int opcao = scanner.nextInt();
 		scanner.nextLine();
-		while (opcao != 3) {
+		while (opcao != 4) {
 			if(opcao == 1) {
 				System.out.println("===============Adicionando Nova Categoria==================");
 				System.out.print("Nome: ");
 				String nome = scanner.nextLine();
-				categoriaService.adicionar(new Categoria(null, nome));
-				System.out.println("Categoria adicionada!");
+				try {
+					categoriaService.adicionar(new Categoria(null, nome));
+					System.out.println("Categoria adicionada!");
+					
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
 				System.out.println("============================================================");
 			}
 			if(opcao == 2) {
@@ -37,10 +43,24 @@ public class TesteCategoria {
 				}
 				System.out.println("========================================================");
 			}
+			
+			if(opcao == 3) {
+				System.out.println("================Buscar Categorias====================");
+				try {
+					System.out.print("Matricula: ");
+					Integer id = scanner.nextInt();
+					Categoria categoria = categoriaService.buscar(id);
+					System.out.println(categoria);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+				System.out.println("========================================================");
+			}
 			System.out.println("O que deseja fazer? ");
 			System.out.println("1 - Adicionar");
 			System.out.println("2 - Listar");
-			System.out.println("3 - Sair");
+			System.out.println("3 - Lista uma Categoria");
+			System.out.println("4 - Sair");
 			System.out.print("R: ");
 			opcao = scanner.nextInt();
 			scanner.nextLine();

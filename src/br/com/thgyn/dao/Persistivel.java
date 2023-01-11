@@ -1,4 +1,4 @@
-package br.com.thgyn.dao.categoria;
+package br.com.thgyn.dao;
 
 import java.util.List;
 

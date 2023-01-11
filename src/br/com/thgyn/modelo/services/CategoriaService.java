@@ -2,7 +2,7 @@ package br.com.thgyn.modelo.services;
 
 import java.util.List;
 
-import br.com.thgyn.dao.categoria.Persistivel;
+import br.com.thgyn.dao.Persistivel;
 import br.com.thgyn.modelo.entidades.Categoria;
 
 public class CategoriaService {
@@ -30,5 +30,12 @@ public class CategoriaService {
 	
 	public List<Categoria> listar(){
 		return repository.listar();
+	}
+	
+	public Categoria buscar(Integer id) {
+		if(id == null || id <= 0)
+			throw new IllegalArgumentException("O objeto: Id é nulo/menor que zero.");
+		
+		return repository.buscar(id);
 	}
 }

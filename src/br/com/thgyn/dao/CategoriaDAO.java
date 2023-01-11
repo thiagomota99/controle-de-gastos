@@ -1,17 +1,20 @@
-package br.com.thgyn.dao.categoria;
+package br.com.thgyn.dao;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.thgyn.exceptions.CategoriaNaoEncontradaException;
 import br.com.thgyn.modelo.entidades.Categoria;
 
 public class CategoriaDAO implements Persistivel<Categoria> {
 	
 	private List<Categoria> categorias = new ArrayList<Categoria>();
+	private static Integer ID = 0;
 	
 	@Override
 	public void adicionar(Categoria obj) {
-		this.categorias.add(obj);
+		CategoriaDAO.ID = CategoriaDAO.ID + 1;
+		this.categorias.add(new Categoria(CategoriaDAO.ID, obj.getNome()));
 	}
 
 	@Override
@@ -21,8 +24,17 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 
 	@Override
 	public Categoria buscar(Integer id) {
-		Categoria categoria = this.categorias.get(id);
-		return new Categoria(categoria.getId(), categoria.getNome());
+		Categoria obj = null;
+		for (Categoria categoria : this.categorias) {
+			if(categoria.getId().intValue() == id.intValue()) {
+				obj = categoria;
+				break;
+			}
+		}	
+		if(obj == null)
+			throw new CategoriaNaoEncontradaException("Id não encontrado.");
+		
+		return new Categoria(obj.getId(), obj.getNome());
 	}
 
 	@Override
