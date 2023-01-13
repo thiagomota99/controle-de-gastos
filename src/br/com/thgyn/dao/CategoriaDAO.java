@@ -39,8 +39,8 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 
 	@Override
 	public void atualizar(Categoria obj) {
-		String nome = obj.getNome();
-		this.categorias.get(obj.getId()).setNome(nome);
+		Categoria objetoDebusca = new Categoria(obj.getId(), obj.getNome());
+		this.categorias.get(this.categorias.indexOf(objetoDebusca)).setNome(obj.getNome());
 	}
 
 	@Override

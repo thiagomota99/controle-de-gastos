@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.thgyn.dao.Persistivel;
 import br.com.thgyn.modelo.entidades.Categoria;
+import br.com.thgyn.utils.Validador;
 
 public class CategoriaService {
 	
@@ -17,15 +18,9 @@ public class CategoriaService {
 		this.repository = repository;
 	}
 	
-	public void adicionar(Categoria categoria) {
-		if(categoria == null)
-			throw new IllegalArgumentException("O objeto categoria é nulo");
-		if(categoria.getId() != null)
-			throw new IllegalArgumentException("O identificador de novas categorias deve ser nulo");
-		if(categoria.getNome() == null || categoria.getNome().trim().isEmpty())
-			throw new IllegalArgumentException("A categoria precisa de um nome.");
-		
-		repository.adicionar(categoria);
+	public void adicionar(Categoria obj, Validador<Categoria> validacoes) {
+		validacoes.aplicar(obj);
+		repository.adicionar(obj);
 	}
 	
 	public List<Categoria> listar(){
@@ -37,5 +32,10 @@ public class CategoriaService {
 			throw new IllegalArgumentException("O objeto: Id é nulo/menor que zero.");
 		
 		return repository.buscar(id);
+	}
+	
+	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {
+		validacoes.aplicar(categoria);
+		repository.atualizar(categoria);
 	}
 }
