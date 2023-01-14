@@ -8,7 +8,7 @@ import br.com.thgyn.modelo.entidades.Categoria;
 
 public class CategoriaDAO implements Persistivel<Categoria> {
 	
-	private List<Categoria> categorias = new ArrayList<Categoria>();
+	private static List<Categoria> categorias = new ArrayList<Categoria>();
 	private static Integer ID = 0;
 	
 	@Override
@@ -39,8 +39,7 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 
 	@Override
 	public void atualizar(Categoria obj) {
-		Categoria objetoDebusca = new Categoria(obj.getId(), obj.getNome());
-		this.categorias.get(this.categorias.indexOf(objetoDebusca)).setNome(obj.getNome());
+		this.categorias.get(this.categorias.indexOf(obj)).setNome(obj.getNome());
 	}
 
 	@Override
