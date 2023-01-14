@@ -14,18 +14,18 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 	@Override
 	public void adicionar(Categoria obj) {
 		CategoriaDAO.ID = CategoriaDAO.ID + 1;
-		this.categorias.add(new Categoria(CategoriaDAO.ID, obj.getNome()));
+		CategoriaDAO.categorias.add(new Categoria(CategoriaDAO.ID, obj.getNome()));
 	}
 
 	@Override
 	public List<Categoria> listar() {
-		return new ArrayList<Categoria>(this.categorias);
+		return new ArrayList<Categoria>(CategoriaDAO.categorias);
 	}
 
 	@Override
 	public Categoria buscar(Integer id) {
 		Categoria obj = null;
-		for (Categoria categoria : this.categorias) {
+		for (Categoria categoria : CategoriaDAO.categorias) {
 			if(categoria.getId().intValue() == id.intValue()) {
 				obj = categoria;
 				break;
@@ -39,11 +39,11 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 
 	@Override
 	public void atualizar(Categoria obj) {
-		this.categorias.get(this.categorias.indexOf(obj)).setNome(obj.getNome());
+		CategoriaDAO.categorias.get(CategoriaDAO.categorias.indexOf(obj)).setNome(obj.getNome());
 	}
 
 	@Override
 	public void deletar(Integer id) {
-		this.categorias.remove(id);
+		CategoriaDAO.categorias.remove(id);
 	}
 }
