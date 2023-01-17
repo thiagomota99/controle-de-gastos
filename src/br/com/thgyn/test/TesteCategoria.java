@@ -16,14 +16,15 @@ public class TesteCategoria {
 
 	public static void main(String[] args) {
 		int opcao = 0;
-		while (opcao != 5) {
+		while (opcao != 6) {
 			System.out.println("=====================CATEGORIAS====================");
 			System.out.println("O que deseja fazer? ");
 			System.out.println("1 - Adicionar");
 			System.out.println("2 - Listar");
-			System.out.println("3 - Lista uma Categoria");
-			System.out.println("4 - Atualizar uma Categoria");
-			System.out.println("5 - Sair");
+			System.out.println("3 - Buscar Categoria");
+			System.out.println("4 - Atualizar Categoria");
+			System.out.println("5 - Deletar Categoria");
+			System.out.println("6 - Sair");
 			System.out.print("R: ");
 			opcao = scanner.nextInt();
 			scanner.nextLine();
@@ -36,6 +37,8 @@ public class TesteCategoria {
 				TesteCategoria.buscar();
 			else if (opcao == 4)
 				TesteCategoria.atualizar();
+			else if (opcao == 5)
+				TesteCategoria.deletar();
 		}
 		System.out.println("Obrigado, volte sempre!!");
 	}
@@ -100,5 +103,19 @@ public class TesteCategoria {
 				System.out.println("Erro: " + e.getMessage());
 			}
 		}
+	}
+	
+	public static void deletar() {
+		Integer id = null;
+		System.out.println("================Deletar Categoria====================");
+		try {
+			System.out.print("Matricula: ");
+			id = scanner.nextInt();
+			categoriaService.deletar(id);
+			System.out.println("Deletado com sucesso");
+		} catch (Exception e) {
+			System.out.println("Erro: " + e.getMessage());
+		}
+		System.out.println("========================================================");		
 	}
 }

@@ -30,12 +30,17 @@ public class CategoriaService {
 	public Categoria buscar(Integer id) {
 		if(id == null || id <= 0)
 			throw new IllegalArgumentException("O objeto: Id é nulo/menor que zero.");
-		
 		return repository.buscar(id);
 	}
 	
 	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {
 		validacoes.aplicar(categoria);
 		repository.atualizar(categoria);
+	}
+	
+	public void deletar(Integer id) {
+		if(id == null || id <= 0)
+			throw new IllegalArgumentException("O objeto: Id é nulo/menor que zero.");
+		repository.deletar(id);
 	}
 }

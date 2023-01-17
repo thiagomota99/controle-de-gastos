@@ -44,6 +44,6 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 
 	@Override
 	public void deletar(Integer id) {
-		CategoriaDAO.categorias.remove(id);
+		CategoriaDAO.categorias.remove(buscar(id));
 	}
 }
