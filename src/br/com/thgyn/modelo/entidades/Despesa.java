@@ -46,6 +46,26 @@ public class Despesa {
 		return true;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public Double getValor() {
+		return valor;
+	}
+
+	public FormaDePagamento getFormaDePagamento() {
+		return formaDePagamento;
+	}
+
+	public Date getData() {
+		return data;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
 	@Override
 	public String toString() {
 		return "Despesa [id=" + id + ", valor=" + valor + ", formaDePagamento=" + formaDePagamento + ", data=" + data
