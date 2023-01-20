@@ -100,7 +100,8 @@ public class TesteCategoria {
 			try {
 				categoriaService.atualizar(new Categoria(id, nome), new VerificarCategoria(categoriaService));
 			} catch (Exception e) {
-				System.out.println("Erro: " + e.getMessage());
+				e.printStackTrace();
+				System.out.printf("Erro: %s", e.getMessage().toString());
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package br.com.thgyn.validadores;
 
+import br.com.thgyn.enums.AceitaNulo;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.services.CategoriaService;
 
@@ -9,6 +10,7 @@ public class VerificarCategoria extends ValidarAtualizacaoCategoria {
 	
 	public VerificarCategoria(CategoriaService categoriaService) {
 		super();
+		ValidarReferencia.verify(categoriaService, AceitaNulo.NAO);
 		this.categoriaService = categoriaService;
 	}
 	
@@ -18,7 +20,7 @@ public class VerificarCategoria extends ValidarAtualizacaoCategoria {
 		verify(entity);
 	}
 	
-	public void verify(Categoria entity) {
+	private void verify(Categoria entity) {
 		categoriaService.buscar(entity.getId());
 	}
 }
