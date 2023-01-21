@@ -7,10 +7,10 @@ import br.com.thgyn.enums.FormaDePagamento;
 public class Despesa {
 	
 	private final Integer id;
-	private final Double valor;
+	private Double valor;
 	private final FormaDePagamento formaDePagamento;
 	private final Date data;
-	private final String descricao;
+	private String descricao;
 	
 	private Categoria categoria;
 	
@@ -55,6 +55,10 @@ public class Despesa {
 	public Double getValor() {
 		return valor;
 	}
+	
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
 
 	public FormaDePagamento getFormaDePagamento() {
 		return formaDePagamento;
@@ -70,6 +74,10 @@ public class Despesa {
 	
 	public String getDescricao() {
 		return descricao;
+	}
+	
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	@Override

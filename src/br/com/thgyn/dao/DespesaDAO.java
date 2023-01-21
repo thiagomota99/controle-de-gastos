@@ -41,12 +41,17 @@ public class DespesaDAO implements Persistivel<Despesa> {
 
 	@Override
 	public void atualizar(Despesa obj) {
+		if(DespesaDAO.despesas.indexOf(obj) == -1)
+			throw new EntityNotFoundException("Despesa não existe.");
 		
+		Despesa despesa = DespesaDAO.despesas.get(DespesaDAO.despesas.indexOf(obj));
+		despesa.setDescricao(obj.getDescricao());
+		despesa.setValor(obj.getValor());
 	}
 
 	@Override
 	public void deletar(Integer id) {
-
+		DespesaDAO.despesas.remove(buscar(id));
 	}
 
 }
