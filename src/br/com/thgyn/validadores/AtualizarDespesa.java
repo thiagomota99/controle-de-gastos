@@ -21,10 +21,9 @@ public class AtualizarDespesa implements Validador<Despesa> {
 		Objeto.isNotNull(t.getData());
 		Objeto.isNotNull(t.getFormaDePagamento());
 		Objeto.isNotLessOrEqualZero(t.getValor());
+		this.validador.aplicar(t.getCategoria());
 		
 		if(t.getDescricao().trim().isEmpty())
-			throw new IllegalArgumentException("Descrição não pode ser vazio.");
-		
-		this.validador.aplicar(t.getCategoria());		
+			throw new IllegalArgumentException("Descrição não pode ser vazio.");				
 	}
 }
