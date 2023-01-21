@@ -1,16 +1,12 @@
 package br.com.thgyn.validadores;
 
-import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.utils.Objeto;
 
 public class AdicionarDespesa implements Validador<Despesa> {
 	
-	private Validador<Categoria> validador;
-	
-	public AdicionarDespesa(Validador<Categoria> validador) {
-		Objeto.isNotNull(validador);
-		this.validador = validador;
+	public AdicionarDespesa() {
+		
 	}
 	
 	@Override

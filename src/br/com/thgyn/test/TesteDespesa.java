@@ -57,7 +57,7 @@ public class TesteDespesa {
 		try {
 			Categoria categoria = categoriaService.buscar(1);
 			Despesa despesa = new Despesa(null, 20.00, FormaDePagamento.PIX, new Date(), categoria, "Monitor 24 Polegadas");
-			despesaSerivce.adicionar(despesa, new AdicionarDespesa(new AdicionarCategoria()));
+			despesaSerivce.adicionar(despesa, new AdicionarDespesa());
 			System.out.println("Despesa adicionada!");
 		} catch (Exception e) {
 			e.printStackTrace();
