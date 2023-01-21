@@ -6,8 +6,8 @@ import java.util.Scanner;
 import br.com.thgyn.dao.CategoriaDAO;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.services.CategoriaService;
-import br.com.thgyn.validadores.AdicaoCategoria;
-import br.com.thgyn.validadores.VerificarCategoria;
+import br.com.thgyn.validadores.AdicionarCategoria;
+import br.com.thgyn.validadores.AtualizarCategoria;
 
 public class TesteCategoria {
 
@@ -48,7 +48,7 @@ public class TesteCategoria {
 		System.out.print("Nome: ");
 		String nome = scanner.nextLine();
 		try {
-			categoriaService.adicionar(new Categoria(null, nome.trim()), new AdicaoCategoria());
+			categoriaService.adicionar(new Categoria(null, nome), new AdicionarCategoria());
 			System.out.println("Categoria adicionada!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -98,10 +98,10 @@ public class TesteCategoria {
 			nome = scanner.nextLine();
 			
 			try {
-				categoriaService.atualizar(new Categoria(id, nome), new VerificarCategoria(categoriaService));
+				categoriaService.atualizar(new Categoria(id, nome), new AtualizarCategoria());
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.printf("Erro: %s", e.getMessage().toString());
+				System.out.printf("Erro: %s", e.getMessage());
 			}
 		}
 	}

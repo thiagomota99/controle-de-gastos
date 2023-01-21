@@ -3,22 +3,21 @@ package br.com.thgyn.modelo.services;
 import java.util.List;
 
 import br.com.thgyn.dao.Persistivel;
-import br.com.thgyn.enums.AceitaNulo;
 import br.com.thgyn.modelo.entidades.Categoria;
-import br.com.thgyn.utils.Validador;
-import br.com.thgyn.validadores.ValidarReferencia;
+import br.com.thgyn.utils.Objeto;
+import br.com.thgyn.validadores.Validador;
 
-public class CategoriaService {
+public class CategoriaService implements ServiceCRUD<Categoria> {
 	
 	Persistivel<Categoria> repository;
 	
 	public CategoriaService(Persistivel<Categoria> repository) {
-		ValidarReferencia.verify(repository, AceitaNulo.NAO);
+		Objeto.isNotNull(repository);
 		this.repository = repository;
 	}
 	
 	public void adicionar(Categoria obj, Validador<Categoria> validacoes) {
-		ValidarReferencia.verify(validacoes, AceitaNulo.NAO);
+		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(obj);
 		repository.adicionar(obj);
 	}
@@ -28,22 +27,20 @@ public class CategoriaService {
 	}
 	
 	public Categoria buscar(Integer id) {
-		ValidarReferencia.verify(id, AceitaNulo.NAO);
-		if(id <= 0)
-			throw new IllegalArgumentException("O objeto: Id é nulo/menor que zero.");
+		Objeto.isNotNull(id);
+		Objeto.isNotLessOrEqualZero(id);
 		return repository.buscar(id);
 	}
 	
 	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {
-		ValidarReferencia.verify(validacoes, AceitaNulo.NAO);
+		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(categoria);
 		repository.atualizar(categoria);
 	}
 	
 	public void deletar(Integer id) {
-		ValidarReferencia.verify(id, AceitaNulo.NAO);
-		if(id <= 0)
-			throw new IllegalArgumentException("O objeto: Id é nulo/menor que zero.");
+		Objeto.isNotNull(id);
+		Objeto.isNotLessOrEqualZero(id);
 		repository.deletar(id);
 	}
 }

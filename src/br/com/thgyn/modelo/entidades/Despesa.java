@@ -6,19 +6,21 @@ import br.com.thgyn.enums.FormaDePagamento;
 
 public class Despesa {
 	
-	private Integer id;
-	private Double valor;
-	private FormaDePagamento formaDePagamento;
-	private Date data;
+	private final Integer id;
+	private final Double valor;
+	private final FormaDePagamento formaDePagamento;
+	private final Date data;
+	private final String descricao;
 	
 	private Categoria categoria;
 	
-	public Despesa(Integer id, double valor, FormaDePagamento fp, Date data, Categoria categoria) {
+	public Despesa(Integer id, double valor, FormaDePagamento fp, Date data, Categoria categoria, String descricao) {
 		this.id = id;
 		this.valor = valor;
 		this.formaDePagamento = fp;
 		this.data = data;
 		this.categoria = categoria;
+		this.descricao = descricao;
 	}
 
 	@Override
@@ -65,10 +67,14 @@ public class Despesa {
 	public Categoria getCategoria() {
 		return categoria;
 	}
+	
+	public String getDescricao() {
+		return descricao;
+	}
 
 	@Override
 	public String toString() {
 		return "Despesa [id=" + id + ", valor=" + valor + ", formaDePagamento=" + formaDePagamento + ", data=" + data
-				+ ", categoria=" + categoria + "]";
+				+ ", categoria=" + categoria + ", descricao=" + descricao + "]";
 	}
 }

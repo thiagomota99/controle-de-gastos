@@ -1,4 +1,4 @@
-package br.com.thgyn.utils;
+package br.com.thgyn.validadores;
 
 public interface Validador<T> {
 

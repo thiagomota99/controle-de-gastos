@@ -3,7 +3,7 @@ package br.com.thgyn.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.thgyn.exceptions.CategoriaNaoEncontradaException;
+import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
 
 public class CategoriaDAO implements Persistivel<Categoria> {
@@ -32,13 +32,16 @@ public class CategoriaDAO implements Persistivel<Categoria> {
 			}
 		}	
 		if(obj == null)
-			throw new CategoriaNaoEncontradaException("Id não encontrado.");
+			throw new EntityNotFoundException("Id não encontrado.");
 		
 		return new Categoria(obj.getId(), obj.getNome());
 	}
 
 	@Override
 	public void atualizar(Categoria obj) {
+		if(CategoriaDAO.categorias.indexOf(obj) == -1)
+			throw new EntityNotFoundException("Categoria não existe.");
+		
 		CategoriaDAO.categorias.get(CategoriaDAO.categorias.indexOf(obj)).setNome(obj.getNome());
 	}
 

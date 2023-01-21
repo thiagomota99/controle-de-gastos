@@ -1,23 +1,50 @@
 package br.com.thgyn.modelo.services;
 
-import br.com.thgyn.dao.Persistivel;
-import br.com.thgyn.enums.AceitaNulo;
-import br.com.thgyn.modelo.entidades.Despesa;
-import br.com.thgyn.utils.Validador;
-import br.com.thgyn.validadores.ValidarReferencia;
+import java.util.List;
 
-public class DespesaService {
+import br.com.thgyn.dao.Persistivel;
+import br.com.thgyn.modelo.entidades.Despesa;
+import br.com.thgyn.utils.Objeto;
+import br.com.thgyn.validadores.Validador;
+
+public class DespesaService implements ServiceCRUD<Despesa> {
 	
 	private Persistivel<Despesa> repository;
 	
 	public DespesaService(Persistivel<Despesa> repository) {
-		ValidarReferencia.verify(repository, AceitaNulo.NAO);
+		Objeto.isNotNull(repository);
 		this.repository = repository;
 	}
 	
 	public void adicionar(Despesa despesa, Validador<Despesa> validacoes) {
-		ValidarReferencia.verify(validacoes, AceitaNulo.NAO);
+		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(despesa);
 		repository.adicionar(despesa);
+	}
+
+	@Override
+	public List<Despesa> listar() {
+		return repository.listar();
+	}
+
+	@Override
+	public Despesa buscar(Integer id) {
+		Objeto.isNotNull(id);
+		Objeto.isNotLessOrEqualZero(id);
+		return repository.buscar(id);
+	}
+
+	@Override
+	public void atualizar(Despesa despesa, Validador<Despesa> validacoes) {
+		Objeto.isNotNull(validacoes);
+		validacoes.aplicar(despesa);
+		repository.atualizar(despesa);
+	}
+
+	@Override
+	public void deletar(Integer id) {
+		Objeto.isNotNull(id);
+		Objeto.isNotLessOrEqualZero(id);
+		repository.deletar(id);
 	}
 }
