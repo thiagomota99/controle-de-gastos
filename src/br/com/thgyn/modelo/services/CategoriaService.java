@@ -2,6 +2,7 @@ package br.com.thgyn.modelo.services;
 
 import java.util.List;
 
+import br.com.thgyn.conexao.DB;
 import br.com.thgyn.dao.Persistivel;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.utils.Objeto;
@@ -20,16 +21,19 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(obj);
 		repository.adicionar(obj);
+		DB.closeConnection();
 	}
 	
-	public List<Categoria> listar(){
-		return repository.listar();
+	public List<Categoria> listar() {
+		List<Categoria> categorias =  repository.listar();
+		return categorias;
 	}
 	
 	public Categoria buscar(Integer id) {
 		Objeto.isNotNull(id);
 		Objeto.isNotLessOrEqualZero(id);
-		return repository.buscar(id);
+		Categoria categoria = repository.buscar(id);
+		return categoria;
 	}
 	
 	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {

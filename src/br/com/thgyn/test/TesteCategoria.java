@@ -3,7 +3,8 @@ package br.com.thgyn.test;
 import java.util.List;
 import java.util.Scanner;
 
-import br.com.thgyn.dao.CategoriaDAO;
+import br.com.thgyn.conexao.DB;
+import br.com.thgyn.dao.CategoriaDaoJDBC;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.services.CategoriaService;
 import br.com.thgyn.validadores.AdicionarCategoria;
@@ -11,9 +12,9 @@ import br.com.thgyn.validadores.AtualizarCategoria;
 
 public class TesteCategoria {
 
-	private static CategoriaService categoriaService = new CategoriaService(new CategoriaDAO());
 	private static Scanner scanner = new Scanner(System.in);
-
+	private static CategoriaService categoriaService = new CategoriaService(new CategoriaDaoJDBC(DB.getConnection()));
+	
 	public static void main(String[] args) {
 		int opcao = 0;
 		while (opcao != 6) {
@@ -40,6 +41,7 @@ public class TesteCategoria {
 			else if (opcao == 5)
 				TesteCategoria.deletar();
 		}
+		DB.closeConnection();
 		System.out.println("Obrigado, volte sempre!!");
 	}
 
@@ -72,7 +74,7 @@ public class TesteCategoria {
 	}
 
 	public static void buscar() {
-		System.out.println("================Buscar Categorias====================");
+		System.out.println("================Buscar Categoria====================");
 		try {
 			System.out.print("Matricula: ");
 			Integer id = scanner.nextInt();
@@ -117,6 +119,6 @@ public class TesteCategoria {
 		} catch (Exception e) {
 			System.out.println("Erro: " + e.getMessage());
 		}
-		System.out.println("========================================================");		
+		System.out.println("=======================================================");		
 	}
 }
