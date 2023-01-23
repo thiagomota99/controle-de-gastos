@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import br.com.thgyn.dao.CategoriaDAO;
+import br.com.thgyn.conexao.DB;
+import br.com.thgyn.dao.CategoriaDaoJDBC;
 import br.com.thgyn.dao.DespesaDAO;
 import br.com.thgyn.enums.FormaDePagamento;
 import br.com.thgyn.modelo.entidades.Categoria;
@@ -18,11 +19,11 @@ import br.com.thgyn.validadores.AtualizarDespesa;
 
 public class TesteDespesa {
 	
-	private static CategoriaService categoriaService = new CategoriaService(new CategoriaDAO());
+	private static CategoriaService categoriaService = new CategoriaService(new CategoriaDaoJDBC(DB.getConnection()));
 	private static DespesaService despesaSerivce = new DespesaService(new DespesaDAO(), categoriaService);
 	private static Scanner scanner = new Scanner(System.in);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Categoria categoria = new Categoria(null, "Diversão");
 		categoriaService.adicionar(categoria, new AdicionarCategoria());
 		
