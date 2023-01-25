@@ -4,9 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import br.com.thgyn.conexao.DB;
 import br.com.thgyn.dao.CategoriaDaoJDBC;
-import br.com.thgyn.dao.DespesaDAO;
+import br.com.thgyn.dao.DespesaDaoJDBC;
 import br.com.thgyn.enums.FormaDePagamento;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
@@ -19,8 +18,8 @@ import br.com.thgyn.validadores.AtualizarDespesa;
 
 public class TesteDespesa {
 	
-	private static CategoriaService categoriaService = new CategoriaService(new CategoriaDaoJDBC(DB.getConnection()));
-	private static DespesaService despesaSerivce = new DespesaService(new DespesaDAO(), categoriaService);
+	private static CategoriaService categoriaService = new CategoriaService(new CategoriaDaoJDBC());
+	private static DespesaService despesaSerivce = new DespesaService(new DespesaDaoJDBC(), categoriaService);
 	private static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) throws Exception {
@@ -56,7 +55,7 @@ public class TesteDespesa {
 
 	public static void adicionar() {
 		try {
-			Categoria categoria = categoriaService.buscar(1);
+			Categoria categoria = categoriaService.buscar(5);
 			Despesa despesa = new Despesa(null, 20.00, FormaDePagamento.PIX, new Date(), categoria, "Monitor 24 Polegadas");
 			despesaSerivce.adicionar(despesa, new AdicionarDespesa());
 			System.out.println("Despesa adicionada!");

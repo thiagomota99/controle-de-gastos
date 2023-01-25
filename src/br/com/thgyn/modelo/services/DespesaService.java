@@ -2,7 +2,8 @@ package br.com.thgyn.modelo.services;
 
 import java.util.List;
 
-import br.com.thgyn.dao.Persistivel;
+import br.com.thgyn.conexao.DB;
+import br.com.thgyn.dao.DespesaDAO;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.utils.Objeto;
@@ -10,10 +11,10 @@ import br.com.thgyn.validadores.Validador;
 
 public class DespesaService implements ServiceCRUD<Despesa> {
 	
-	private Persistivel<Despesa> repository;
+	private DespesaDAO repository;
 	private ServiceCRUD<Categoria> categoriaService;
 	
-	public DespesaService(Persistivel<Despesa> repository, ServiceCRUD<Categoria> categoriaService) {
+	public DespesaService(DespesaDAO repository, ServiceCRUD<Categoria> categoriaService) {
 		Objeto.isNotNull(repository);
 		Objeto.isNotNull(categoriaService);
 		
@@ -25,7 +26,10 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(despesa);
 		categoriaService.buscar(despesa.getCategoria().getId());
+		
+		repository.setConnection(DB.getConnection());
 		repository.adicionar(despesa);
+		DB.closeConnection();
 	}
 
 	@Override
