@@ -12,19 +12,12 @@ import br.com.thgyn.conexao.DB;
 import br.com.thgyn.exceptions.DbException;
 import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
-import br.com.thgyn.utils.Objeto;
 
 public class CategoriaDaoJDBC implements CategoriaDAO {
 	
 	private Connection connection;
 	private PreparedStatement preparedStatement;
 	private ResultSet resultSet;
-	
-	
-	public CategoriaDaoJDBC(Connection connection) {
-		Objeto.isNotNull(connection);
-		this.connection = connection;
-	}
 	
 	@Override
 	public void adicionar(Categoria obj) {
@@ -121,5 +114,11 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
+	}
+	
+	public void setConnection(Connection connection){
+		if(connection == null)
+			throw new DbException("Connection is null");
+		this.connection = connection;
 	}
 }

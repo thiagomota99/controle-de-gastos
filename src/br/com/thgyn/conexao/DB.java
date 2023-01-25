@@ -32,6 +32,7 @@ public class DB {
 		if (connection != null) {
 			try {
 				connection.close();
+				connection = null;
 			} catch (SQLException e) {
 				throw new DbException(e.getMessage());
 			}
