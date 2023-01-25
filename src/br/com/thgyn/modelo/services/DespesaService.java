@@ -34,7 +34,10 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 
 	@Override
 	public List<Despesa> listar() {
-		return repository.listar();
+		repository.setConnection(DB.getConnection());
+		List<Despesa> despesas = repository.listar();
+		DB.closeConnection();
+		return despesas;
 	}
 
 	@Override

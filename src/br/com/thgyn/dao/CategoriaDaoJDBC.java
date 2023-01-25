@@ -31,7 +31,7 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro inesperado! Nenhuma linha foi afetada!");
+				throw new DbException("Erro! Nenhuma linha foi afetada!");
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
