@@ -1,5 +1,7 @@
 package br.com.thgyn.modelo.services;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.thgyn.conexao.DB;
@@ -20,40 +22,80 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 	public void adicionar(Categoria obj, Validador<Categoria> validacoes) {
 		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(obj);
-		repository.setConnection(DB.getConnection());
-		repository.adicionar(obj);
-		DB.closeConnection();
+		
+		Connection connection = null;
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			repository.adicionar(obj);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		finally {
+			DB.closeConnection(connection);
+		}
 	}
 	
 	public List<Categoria> listar() {
-		repository.setConnection(DB.getConnection());
-		List<Categoria> categorias =  repository.listar();
-		DB.closeConnection();
+		Connection connection = null;
+		List<Categoria> categorias = new ArrayList<Categoria>();
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			categorias =  repository.listar();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		finally {
+			DB.closeConnection(connection);
+		}
 		return categorias;
 	}
 	
 	public Categoria buscar(Integer id) {
 		Objeto.isNotNull(id);
 		Objeto.isNotLessOrEqualZero(id);
-		repository.setConnection(DB.getConnection());
-		Categoria categoria = repository.buscar(id);
-		DB.closeConnection();
+		
+		Connection connection = null;
+		Categoria categoria = null;
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(DB.getConnection());
+			categoria = repository.buscar(id);
+		}
+		finally {
+			DB.closeConnection(connection);
+		}
 		return categoria;
 	}
 	
 	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {
 		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(categoria);
-		repository.setConnection(DB.getConnection());
-		repository.atualizar(categoria);
-		DB.closeConnection();
+		
+		Connection connection = null;
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(DB.getConnection());
+			repository.atualizar(categoria);
+		} finally {
+			DB.closeConnection(connection);
+		}		
 	}
 	
 	public void deletar(Integer id) {
 		Objeto.isNotNull(id);
 		Objeto.isNotLessOrEqualZero(id);
-		repository.setConnection(DB.getConnection());
-		repository.deletar(id);
-		DB.closeConnection();
+		
+		Connection connection = null;
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			repository.deletar(id);
+		}finally {
+			DB.closeConnection(connection);
+		}
 	}
 }
