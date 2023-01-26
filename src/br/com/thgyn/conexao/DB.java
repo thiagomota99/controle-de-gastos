@@ -12,23 +12,25 @@ import java.util.Properties;
 import br.com.thgyn.exceptions.DbException;
 
 public class DB {
-	private static Connection connection = null;
+	
+	private static String url;
+	private static Properties properties;
 	
 	public static Connection getConnection() {
 		try {
-			if(connection == null) {
-				Properties properties = loadProperties();
-				String url = properties.getProperty("dburl");
-				connection = DriverManager.getConnection(url, properties);
+			if(DB.url == null || DB.properties == null) {
+				properties = loadProperties();
+				url = properties.getProperty("dburl");
+				DriverManager.getConnection(url, properties);
+				return DriverManager.getConnection(url, properties);
 			}
+			return DriverManager.getConnection(url, properties);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
-
-		return connection;
 	}
 	
-	public static void closeConnection() {
+	public static void closeConnection(Connection connection) {
 		if (connection != null) {
 			try {
 				connection.close();
