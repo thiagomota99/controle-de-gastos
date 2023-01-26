@@ -1,5 +1,7 @@
 package br.com.thgyn.modelo.services;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.thgyn.conexao.DB;
@@ -25,18 +27,34 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public void adicionar(Despesa despesa, Validador<Despesa> validacoes) {
 		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(despesa);
-		categoriaService.buscar(despesa.getCategoria().getId());
 		
-		repository.setConnection(DB.getConnection());
-		repository.adicionar(despesa);
-		DB.closeConnection();
+		Connection connection = null;
+		try {
+			categoriaService.buscar(despesa.getCategoria().getId());
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			repository.adicionar(despesa);			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		finally {
+			DB.closeConnection(connection);
+		}
 	}
 
 	@Override
 	public List<Despesa> listar() {
-		repository.setConnection(DB.getConnection());
-		List<Despesa> despesas = repository.listar();
-		DB.closeConnection();
+		Connection connection = null;
+		List<Despesa> despesas = new ArrayList<Despesa>();
+		try {
+			repository.setConnection(DB.getConnection());
+			despesas = repository.listar();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		finally {
+			DB.closeConnection(connection);			
+		}
 		return despesas;
 	}
 
@@ -44,7 +62,18 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public Despesa buscar(Integer id) {
 		Objeto.isNotNull(id);
 		Objeto.isNotLessOrEqualZero(id);
-		return repository.buscar(id);
+		
+		Connection connection = null;
+		Despesa despesa = null;
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			despesa = repository.buscar(id);
+		}
+		finally {
+			DB.closeConnection(connection);
+		}		
+		return despesa;
 	}
 
 	@Override

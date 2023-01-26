@@ -16,6 +16,7 @@ import br.com.thgyn.enums.FormaDePagamento;
 import br.com.thgyn.exceptions.DbException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
+import br.com.thgyn.utils.Objeto;
 
 public class DespesaDaoJDBC implements DespesaDAO {
 
@@ -55,13 +56,12 @@ public class DespesaDaoJDBC implements DespesaDAO {
 	@Override
 	public List<Despesa> listar() {
 		try {
-			StringBuilder sql = listarDespeasSQL();
-			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement = connection.prepareStatement(listarDespeasSQL());
 			resultSet = preparedStatement.executeQuery();
 			
 			List<Despesa> despesas = new ArrayList<Despesa>();
 			while(resultSet.next()) 
-				despesas.add(criarObejtoDespesa(resultSet));
+				despesas.add(criarObejtoDespesa());
 			
 			return despesas;
 			
@@ -76,71 +76,27 @@ public class DespesaDaoJDBC implements DespesaDAO {
 		}
 	}
 	
-	private Categoria getCategoria(ResultSet resultSet) throws SQLException {
-		Integer key = resultSet.getInt("C.ID");
-		if(categorias.get(key) == null) {
-			Categoria temp = criarObjetoCategotira(resultSet);
-			categorias.put(temp.getId(), temp);
-			return categorias.get(key);
-		}
-		else {
-			return categorias.get(key);
-		}
-	}
-
-	private Despesa criarObejtoDespesa(ResultSet resultSet) throws SQLException {
-		Integer id = resultSet.getInt("D.ID");
-		Double valor = resultSet.getDouble("D.VALOR");
-		FormaDePagamento fp = getFormaPagamento(resultSet);
-		Date data = resultSet.getDate("D.DATA_CADASTRO");
-		Categoria categoria = getCategoria(resultSet);
-		String descricao = resultSet.getString("D.DESCRICAO");
-		
-		Despesa despesa = new Despesa(id, valor, fp, data, categoria, descricao);		
-		return despesa;
-	}
-	
-	private FormaDePagamento getFormaPagamento(ResultSet resultSet) throws SQLException {
-		Integer key = resultSet.getInt("FP.ID");
-		if(formasDePagamento.get(key) == null) {
-			FormaDePagamento temp = criarEnumFormaPagamento(resultSet);
-			formasDePagamento.put(temp.getCodigo(), temp);
-			return formasDePagamento.get(key);
-		}
-		else {
-			return formasDePagamento.get(key);
-		}
-	}
-	
-	private Categoria criarObjetoCategotira(ResultSet resultSet) throws SQLException {
-		Categoria categoria = new Categoria();
-		categoria.setId(resultSet.getInt("C.ID"));
-		categoria.setNome(resultSet.getString("C.DESCRICAO"));
-		return categoria;
-	}
-	
-	private FormaDePagamento criarEnumFormaPagamento(ResultSet resultSet) throws SQLException {
-		FormaDePagamento fp = FormaDePagamento.valueOf(resultSet.getInt("FP.ID"));
-		return fp;
-	}
-
-	private StringBuilder listarDespeasSQL() {
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT ");
-		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
-		sql.append("C.ID, C.DESCRICAO, ");
-		sql.append("FP.ID ");
-		sql.append("FROM DESPESA AS D ");
-		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
-		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
-		sql.append("ORDER BY DATA_CADASTRO");
-		return sql;
-	}
-
 	@Override
 	public Despesa buscar(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		Despesa despesa = null;
+		try {
+			preparedStatement = connection.prepareStatement(buscarDespesa());
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()) 
+				despesa = criarObejtoDespesa();
+			else
+				throw new DbException("Nenhuma despesa cadastrada com esse id.");
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(preparedStatement);
+			DB.closeResultSet(resultSet);
+			System.out.println("Map de Categorias: " + categorias.size());
+			System.out.println("Map de Formas De Pagamento: " + formasDePagamento.size());
+		}
+		return despesa;
 	}
 
 	@Override
@@ -157,7 +113,82 @@ public class DespesaDaoJDBC implements DespesaDAO {
 
 	@Override
 	public void setConnection(Connection connection) {
+		Objeto.isNotNull(connection);
 		this.connection = connection;
+	}
+	
+	private Categoria getCategoria(ResultSet resultSet) throws SQLException {
+		Integer key = resultSet.getInt("C.ID");
+		if(categorias.get(key) == null) {
+			Categoria temp = criarObjetoCategotira();
+			categorias.put(temp.getId(), temp);
+			return categorias.get(key);
+		}
+		else {
+			return categorias.get(key);
+		}
+	}
+
+	private Despesa criarObejtoDespesa() throws SQLException {
+		Integer id = resultSet.getInt("D.ID");
+		Double valor = resultSet.getDouble("D.VALOR");
+		FormaDePagamento fp = getFormaPagamento();
+		Date data = resultSet.getDate("D.DATA_CADASTRO");
+		Categoria categoria = getCategoria(resultSet);
+		String descricao = resultSet.getString("D.DESCRICAO");
+		
+		Despesa despesa = new Despesa(id, valor, fp, data, categoria, descricao);		
+		return despesa;
+	}
+	
+	private FormaDePagamento getFormaPagamento() throws SQLException {
+		Integer key = resultSet.getInt("FP.ID");
+		if(formasDePagamento.get(key) == null) {
+			FormaDePagamento temp = criarEnumFormaPagamento();
+			formasDePagamento.put(temp.getCodigo(), temp);
+			return formasDePagamento.get(key);
+		}
+		else {
+			return formasDePagamento.get(key);
+		}
+	}
+	
+	private Categoria criarObjetoCategotira() throws SQLException {
+		Categoria categoria = new Categoria();
+		categoria.setId(resultSet.getInt("C.ID"));
+		categoria.setNome(resultSet.getString("C.DESCRICAO"));
+		return categoria;
+	}
+	
+	private FormaDePagamento criarEnumFormaPagamento() throws SQLException {
+		FormaDePagamento fp = FormaDePagamento.valueOf(resultSet.getInt("FP.ID"));
+		return fp;
+	}
+
+	private String listarDespeasSQL() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT ");
+		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
+		sql.append("C.ID, C.DESCRICAO, ");
+		sql.append("FP.ID ");
+		sql.append("FROM DESPESA AS D ");
+		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
+		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
+		sql.append("ORDER BY DATA_CADASTRO");
+		return sql.toString();
+	}
+	
+	private String buscarDespesa() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT ");
+		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
+		sql.append("C.ID, C.DESCRICAO, ");
+		sql.append("FP.ID ");
+		sql.append("FROM DESPESA AS D ");
+		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
+		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
+		sql.append("WHERE D.ID = ?");
+		return sql.toString();
 	}
 
 }
