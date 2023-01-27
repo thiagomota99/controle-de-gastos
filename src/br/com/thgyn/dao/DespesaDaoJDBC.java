@@ -43,7 +43,7 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro inesperado! Nenhuma linha foi afetada!");
+				throw new DbException("Erro! Nenhuma linha foi afetada!");
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -101,14 +101,38 @@ public class DespesaDaoJDBC implements DespesaDAO {
 
 	@Override
 	public void atualizar(Despesa obj) {
-		// TODO Auto-generated method stub
-		
+		try {
+			preparedStatement = connection.prepareStatement(atualizarDespesa());
+			preparedStatement.setString(1, obj.getDescricao());
+			preparedStatement.setDouble(2, obj.getValor());
+			preparedStatement.setInt(3, obj.getId());
+			
+			int linhasAfetadas = preparedStatement.executeUpdate();
+			if(linhasAfetadas == 0)
+				throw new DbException("Erro! Nenhuma linha afetada.");
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
 	}
 
 	@Override
 	public void deletar(Integer id) {
-		// TODO Auto-generated method stub
-		
+		try {
+			preparedStatement = connection.prepareStatement(deletarDespesa());
+			preparedStatement.setInt(1, id);
+			
+			int linhasAfetadas = preparedStatement.executeUpdate();
+			if(linhasAfetadas == 0)
+				throw new DbException("Erro! Nenhuma linha afetada.");
+		} catch (Exception e) {
+			throw new DbException(e.getMessage());
+		}
+	}
+
+	private String deletarDespesa() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM DESPESA WHERE ID = ?");
+		return sql.toString();
 	}
 
 	@Override
@@ -190,5 +214,10 @@ public class DespesaDaoJDBC implements DespesaDAO {
 		sql.append("WHERE D.ID = ?");
 		return sql.toString();
 	}
-
+	
+	private String atualizarDespesa() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE DESPESA SET DESCRICAO = ?, VALOR = ? WHERE ID = ?");		
+		return sql.toString();
+	}
 }

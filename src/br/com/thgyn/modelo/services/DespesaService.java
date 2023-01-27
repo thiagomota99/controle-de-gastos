@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.com.thgyn.conexao.DB;
 import br.com.thgyn.dao.DespesaDAO;
+import br.com.thgyn.exceptions.DbException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.utils.Objeto;
@@ -80,13 +81,36 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public void atualizar(Despesa despesa, Validador<Despesa> validacoes) {
 		Objeto.isNotNull(validacoes);
 		validacoes.aplicar(despesa);
-		repository.atualizar(despesa);
+		Connection connection = null;
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			repository.atualizar(despesa);
+		} catch (DbException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		finally {
+			DB.closeConnection(connection);
+		}		
 	}
 
 	@Override
 	public void deletar(Integer id) {
 		Objeto.isNotNull(id);
 		Objeto.isNotLessOrEqualZero(id);
-		repository.deletar(id);
+		Connection connection = null;
+		
+		try {
+			connection = DB.getConnection();
+			repository.setConnection(connection);
+			repository.deletar(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		finally {
+			DB.closeConnection(connection);
+		}
 	}
 }
