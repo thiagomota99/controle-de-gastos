@@ -178,10 +178,9 @@ public class DespesaDaoJDBC implements DespesaDAO {
 	}
 	
 	private Categoria criarObjetoCategotira() throws SQLException {
-		Categoria categoria = new Categoria();
-		categoria.setId(resultSet.getInt("C.ID"));
-		categoria.setNome(resultSet.getString("C.DESCRICAO"));
-		return categoria;
+		Integer id = resultSet.getInt("C.ID");
+		String nome = resultSet.getString("C.DESCRICAO");
+		return new Categoria(id, nome);
 	}
 	
 	private FormaDePagamento criarEnumFormaPagamento() throws SQLException {
