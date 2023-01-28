@@ -56,10 +56,6 @@ public class Despesa {
 		return valor;
 	}
 	
-	public void setValor(Double valor) {
-		this.valor = valor;
-	}
-
 	public FormaDePagamento getFormaDePagamento() {
 		return formaDePagamento;
 	}
@@ -76,10 +72,6 @@ public class Despesa {
 		return descricao;
 	}
 	
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
 	@Override
 	public String toString() {
 		return "Despesa [id=" + id + ", valor=" + valor + ", formaDePagamento=" + formaDePagamento + ", data=" + data

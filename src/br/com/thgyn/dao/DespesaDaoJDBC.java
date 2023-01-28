@@ -14,6 +14,7 @@ import java.util.Map;
 import br.com.thgyn.conexao.DB;
 import br.com.thgyn.enums.FormaDePagamento;
 import br.com.thgyn.exceptions.DbException;
+import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.utils.Objeto;
@@ -55,26 +56,39 @@ public class DespesaDaoJDBC implements DespesaDAO {
 
 	@Override
 	public List<Despesa> listar() {
+		List<Despesa> despesas = new ArrayList<Despesa>();
 		try {
 			preparedStatement = connection.prepareStatement(listarDespeasSQL());
 			resultSet = preparedStatement.executeQuery();
 			
-			List<Despesa> despesas = new ArrayList<Despesa>();
-			while(resultSet.next()) 
-				despesas.add(criarObejtoDespesa());
-			
-			return despesas;
-			
+			if(resultSet.next())
+				do 
+					despesas.add(criarObejtoDespesa());
+				while (resultSet.next());
+			else
+				throw new EntityNotFoundException("Não existe nenhuma despesa cadastrada.");			
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(preparedStatement);
 			DB.closeResultSet(resultSet);
-			System.out.println("Map de Categorias: " + categorias.size());
-			System.out.println("Map de Formas De Pagamento: " + formasDePagamento.size());
 		}
+		return despesas;
 	}
+	
+	private String listarDespeasSQL() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT ");
+		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
+		sql.append("C.ID, C.DESCRICAO, ");
+		sql.append("FP.ID ");
+		sql.append("FROM DESPESA AS D ");
+		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
+		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
+		sql.append("ORDER BY DATA_CADASTRO");
+		return sql.toString();
+	}	
 	
 	@Override
 	public Despesa buscar(Integer id) {
@@ -86,18 +100,29 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			if(resultSet.next()) 
 				despesa = criarObejtoDespesa();
 			else
-				throw new DbException("Nenhuma despesa cadastrada com esse id.");
+				throw new EntityNotFoundException("Nenhuma despesa cadastrada com esse id.");
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(preparedStatement);
 			DB.closeResultSet(resultSet);
-			System.out.println("Map de Categorias: " + categorias.size());
-			System.out.println("Map de Formas De Pagamento: " + formasDePagamento.size());
 		}
 		return despesa;
 	}
+	
+	private String buscarDespesa() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT ");
+		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
+		sql.append("C.ID, C.DESCRICAO, ");
+		sql.append("FP.ID ");
+		sql.append("FROM DESPESA AS D ");
+		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
+		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
+		sql.append("WHERE D.ID = ?");
+		return sql.toString();
+	}	
 
 	@Override
 	public void atualizar(Despesa obj) {
@@ -114,6 +139,12 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			throw new DbException(e.getMessage());
 		}
 	}
+	
+	private String atualizarDespesa() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE DESPESA SET DESCRICAO = ?, VALOR = ? WHERE ID = ?");		
+		return sql.toString();
+	}
 
 	@Override
 	public void deletar(Integer id) {
@@ -124,7 +155,7 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
 				throw new DbException("Erro! Nenhuma linha afetada.");
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
 	}
@@ -141,18 +172,6 @@ public class DespesaDaoJDBC implements DespesaDAO {
 		this.connection = connection;
 	}
 	
-	private Categoria getCategoria(ResultSet resultSet) throws SQLException {
-		Integer key = resultSet.getInt("C.ID");
-		if(categorias.get(key) == null) {
-			Categoria temp = criarObjetoCategotira();
-			categorias.put(temp.getId(), temp);
-			return categorias.get(key);
-		}
-		else {
-			return categorias.get(key);
-		}
-	}
-
 	private Despesa criarObejtoDespesa() throws SQLException {
 		Integer id = resultSet.getInt("D.ID");
 		Double valor = resultSet.getDouble("D.VALOR");
@@ -177,46 +196,26 @@ public class DespesaDaoJDBC implements DespesaDAO {
 		}
 	}
 	
-	private Categoria criarObjetoCategotira() throws SQLException {
-		Integer id = resultSet.getInt("C.ID");
-		String nome = resultSet.getString("C.DESCRICAO");
-		return new Categoria(id, nome);
-	}
-	
 	private FormaDePagamento criarEnumFormaPagamento() throws SQLException {
 		FormaDePagamento fp = FormaDePagamento.valueOf(resultSet.getInt("FP.ID"));
 		return fp;
 	}
-
-	private String listarDespeasSQL() {
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT ");
-		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
-		sql.append("C.ID, C.DESCRICAO, ");
-		sql.append("FP.ID ");
-		sql.append("FROM DESPESA AS D ");
-		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
-		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
-		sql.append("ORDER BY DATA_CADASTRO");
-		return sql.toString();
-	}
 	
-	private String buscarDespesa() {
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT ");
-		sql.append("D.ID, D.DESCRICAO, D.VALOR, D.DATA_CADASTRO, ");
-		sql.append("C.ID, C.DESCRICAO, ");
-		sql.append("FP.ID ");
-		sql.append("FROM DESPESA AS D ");
-		sql.append("INNER JOIN CATEGORIA AS C ON (C.ID = D.CATEGORIA_ID) ");
-		sql.append("INNER JOIN FORMA_PAGAMENTO AS FP ON (FP.ID = D.FORMA_PAGAMENTO_ID) ");
-		sql.append("WHERE D.ID = ?");
-		return sql.toString();
-	}
+	private Categoria getCategoria(ResultSet resultSet) throws SQLException {
+		Integer key = resultSet.getInt("C.ID");
+		if(categorias.get(key) == null) {
+			Categoria temp = criarObjetoCategotira();
+			categorias.put(temp.getId(), temp);
+			return categorias.get(key);
+		}
+		else {
+			return categorias.get(key);
+		}
+	}	
 	
-	private String atualizarDespesa() {
-		StringBuilder sql = new StringBuilder();
-		sql.append("UPDATE DESPESA SET DESCRICAO = ?, VALOR = ? WHERE ID = ?");		
-		return sql.toString();
+	private Categoria criarObjetoCategotira() throws SQLException {
+		Integer id = resultSet.getInt("C.ID");
+		String nome = resultSet.getString("C.DESCRICAO");
+		return new Categoria(id, nome);
 	}
 }

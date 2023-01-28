@@ -1,7 +1,8 @@
 package br.com.thgyn.validadores;
 
+import br.com.thgyn.exceptions.DespesaException;
+import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Despesa;
-import br.com.thgyn.utils.Objeto;
 
 public class AdicionarDespesa implements Validador<Despesa> {
 	
@@ -11,17 +12,26 @@ public class AdicionarDespesa implements Validador<Despesa> {
 	
 	@Override
 	public void aplicar(Despesa t) {
-		Objeto.isNotNull(t);
-		Objeto.isNull(t.getId());
-		Objeto.isNotNull(t.getDescricao());
-		Objeto.isNotNull(t.getValor());
-		Objeto.isNotLessOrEqualZero(t.getValor());
-		Objeto.isNotNull(t.getData());
-		Objeto.isNotNull(t.getFormaDePagamento());
-		Objeto.isNotNull(t.getCategoria());
+		EntidadeException despesaException = new DespesaException("Erro ao adicionar despesa.");
 		
-		
-		if(t.getDescricao().trim().isEmpty())
-			throw new IllegalArgumentException("Descrição não pode ser vazio.");
+		if(t == null) {
+			despesaException.addErro("Objeto despesa não pode ser nulo.");
+			throw despesaException;
+		}
+		if(t.getId() != null)
+			despesaException.addErro("Id deve ser nulo.");
+		if(t.getDescricao() == null || t.getDescricao().trim().isEmpty())
+			despesaException.addErro("Descriação não pode ser nulo/vazio.");
+		if(t.getValor() == null || t.getValor().doubleValue() <= 0)
+			despesaException.addErro("Valor não pode ser nulo/menor ou igual a zero.");
+		if(t.getData() == null)
+			despesaException.addErro("Data não pode ser nulo.");
+		if(t.getFormaDePagamento() == null)
+			despesaException.addErro("Forma de pagamento não pode ser nulo.");
+		if(t.getCategoria() == null)
+			despesaException.addErro("Categoria não pode ser nulo.");
+			
+		if(despesaException.getErros().size() > 0)
+			throw despesaException;
 	}
 }
