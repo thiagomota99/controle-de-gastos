@@ -43,17 +43,16 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 
 	@Override
 	public List<Categoria> listar() {
+		List<Categoria> lista = new ArrayList<Categoria>();
 		try {
 			preparedStatement = connection.prepareStatement("SELECT * FROM CATEGORIA");
-			
 			resultSet = preparedStatement.executeQuery();
-			
-			List<Categoria> lista = new ArrayList<Categoria>();
-			while(resultSet.next()) {
-				lista.add(new Categoria(resultSet.getInt("ID"), resultSet.getString("DESCRICAO")));				
-			}
-			return lista;
-			
+			if(!resultSet.next())
+				throw new EntityNotFoundException("Não existe nenhuma categoria.");
+			else
+				do
+					lista.add(new Categoria(resultSet.getInt("ID"), resultSet.getString("DESCRICAO")));
+				while(resultSet.next());										
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -61,6 +60,7 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			DB.closeStatement(preparedStatement);
 			DB.closeResultSet(resultSet);
 		}
+		return lista;
 	}
 
 	@Override
@@ -92,7 +92,9 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			preparedStatement.setString(1, obj.getNome());
 			preparedStatement.setInt(2, obj.getId());
 			
-			preparedStatement.executeUpdate();			
+			int linhasAfetadas = preparedStatement.executeUpdate();
+			if(linhasAfetadas == 0)
+				throw new DbException("Erro! Nenhuma linha afetada.");
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -118,7 +120,7 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 	
 	public void setConnection(Connection connection){
 		if(connection == null)
-			throw new DbException("Connection is null");
+			throw new NullPointerException("Objeto connection não pode ser nulo.");
 		this.connection = connection;
 	}
 }
