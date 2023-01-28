@@ -1,13 +1,14 @@
 package br.com.thgyn.validadores;
 
 import br.com.thgyn.exceptions.CategoriaException;
+import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Categoria;
 
 public class AdicionarCategoria implements Validador<Categoria>{
 	
 	@Override
 	public void aplicar(Categoria t) {
-		CategoriaException categoriaException = new CategoriaException("Erro ao adicionar a categoria.");
+		EntidadeException categoriaException = new CategoriaException("Erro ao adicionar a categoria.");
 		if(t == null)
 			categoriaException.addErro("Objeto categoria não pode ser nulo.");
 		if(categoriaException.getErros().size() > 0)
