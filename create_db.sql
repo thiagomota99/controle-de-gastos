@@ -30,6 +30,15 @@ CREATE TABLE `categoria` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `categoria`
+--
+
+LOCK TABLES `categoria` WRITE;
+/*!40000 ALTER TABLE `categoria` DISABLE KEYS */;
+/*!40000 ALTER TABLE `categoria` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `despesa`
 --
 
@@ -52,6 +61,15 @@ CREATE TABLE `despesa` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `despesa`
+--
+
+LOCK TABLES `despesa` WRITE;
+/*!40000 ALTER TABLE `despesa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `despesa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `forma_pagamento`
 --
 
@@ -64,6 +82,16 @@ CREATE TABLE `forma_pagamento` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forma_pagamento`
+--
+
+LOCK TABLES `forma_pagamento` WRITE;
+/*!40000 ALTER TABLE `forma_pagamento` DISABLE KEYS */;
+INSERT INTO `forma_pagamento` VALUES (1,'DINHEIRO'),(2,'DEBITO'),(3,'PIX'),(4,'CREDITO');
+/*!40000 ALTER TABLE `forma_pagamento` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -74,4 +102,4 @@ CREATE TABLE `forma_pagamento` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-28 21:10:36
+-- Dump completed on 2023-01-28 21:25:07
