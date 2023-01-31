@@ -168,7 +168,7 @@ public class DespesaDaoJDBC implements DespesaDAO {
 
 	@Override
 	public void setConnection(Connection connection) {
-		Objeto.isNotNull(connection);
+		Objeto.notNullOrException(connection);
 		this.connection = connection;
 	}
 	

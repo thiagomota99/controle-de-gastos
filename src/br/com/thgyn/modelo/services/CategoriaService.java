@@ -18,14 +18,14 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 	private CategoriaDAO repository;
 
 	public CategoriaService(CategoriaDAO repository) {
-		Objeto.isNotNull(repository);
+		Objeto.notNullOrException(repository);
 		this.repository = repository;
 	}
 
 	public void adicionar(Categoria obj, Validador<Categoria> validacoes) {
 		Connection connection = null;
 		try {
-			Objeto.isNotNull(validacoes);
+			Objeto.notNullOrException(validacoes);
 			validacoes.aplicar(obj);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
@@ -58,8 +58,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 		Connection connection = null;
 		Categoria categoria = null;
 		try {
-			Objeto.isNotNull(id);
-			Objeto.isNotLessOrEqualZero(id);
+			Objeto.notNullOrException(id);
+			Objeto.notLessEqualZeroOrException(id);
 			connection = DB.getConnection();
 			repository.setConnection(DB.getConnection());
 			categoria = repository.buscar(id);
@@ -74,7 +74,7 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {
 		Connection connection = null;
 		try {
-			Objeto.isNotNull(validacoes);
+			Objeto.notNullOrException(validacoes);
 			validacoes.aplicar(categoria);
 			connection = DB.getConnection();
 			repository.setConnection(DB.getConnection());
@@ -91,8 +91,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 	public void deletar(Integer id) {
 		Connection connection = null;
 		try {
-			Objeto.isNotNull(id);
-			Objeto.isNotLessOrEqualZero(id);
+			Objeto.notNullOrException(id);
+			Objeto.notLessEqualZeroOrException(id);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			repository.deletar(id);

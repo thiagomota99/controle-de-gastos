@@ -20,8 +20,8 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	private ServiceCRUD<Categoria> categoriaService;
 	
 	public DespesaService(DespesaDAO repository, ServiceCRUD<Categoria> categoriaService) {
-		Objeto.isNotNull(repository);
-		Objeto.isNotNull(categoriaService);
+		Objeto.notNullOrException(repository);
+		Objeto.notNullOrException(categoriaService);
 		
 		this.categoriaService = categoriaService;
 		this.repository = repository;
@@ -30,9 +30,9 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public void adicionar(Despesa despesa, Validador<Despesa> validacoes) {
 		Connection connection = null;
 		try {
-			Objeto.isNotNull(validacoes);
+			Objeto.notNullOrException(validacoes);
 			validacoes.aplicar(despesa);
-			Objeto.isNotNull(categoriaService.buscar(despesa.getCategoria().getId()));
+			Objeto.notNullOrException(categoriaService.buscar(despesa.getCategoria().getId()));
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			repository.adicionar(despesa);			
@@ -66,8 +66,8 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 		Connection connection = null;
 		Despesa despesa = null;
 		try {
-			Objeto.isNotNull(id);
-			Objeto.isNotLessOrEqualZero(id);
+			Objeto.notNullOrException(id);
+			Objeto.notLessEqualZeroOrException(id);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			despesa = repository.buscar(id);
@@ -85,7 +85,7 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public void atualizar(Despesa despesa, Validador<Despesa> validacoes) {
 		Connection connection = null;
 		try {
-			Objeto.isNotNull(validacoes);
+			Objeto.notNullOrException(validacoes);
 			validacoes.aplicar(despesa);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
@@ -105,8 +105,8 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public void deletar(Integer id) {
 		Connection connection = null;		
 		try {
-			Objeto.isNotNull(id);
-			Objeto.isNotLessOrEqualZero(id);
+			Objeto.notNullOrException(id);
+			Objeto.notLessEqualZeroOrException(id);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			repository.deletar(id);
