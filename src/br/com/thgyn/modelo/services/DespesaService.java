@@ -12,6 +12,7 @@ import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.utils.Objeto;
+import br.com.thgyn.validadores.Adicionavel;
 import br.com.thgyn.validadores.Validador;
 
 public class DespesaService implements ServiceCRUD<Despesa> {
@@ -27,7 +28,7 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 		this.repository = repository;
 	}
 	
-	public void adicionar(Despesa despesa, Validador<Despesa> validacoes) {
+	public void adicionar(Despesa despesa, Adicionavel<Despesa> validacoes) {
 		Connection connection = null;
 		try {
 			Objeto.notNullOrException(validacoes);

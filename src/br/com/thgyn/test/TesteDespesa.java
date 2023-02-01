@@ -5,6 +5,7 @@ import java.util.Date;
 import br.com.thgyn.dao.CategoriaDaoJDBC;
 import br.com.thgyn.dao.DespesaDaoJDBC;
 import br.com.thgyn.enums.FormaDePagamento;
+import br.com.thgyn.exceptions.DespesaException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.modelo.services.CategoriaService;
@@ -17,7 +18,7 @@ public class TesteDespesa {
 	public static void main(String[] args) {
 		Categoria categoria = new Categoria(41, null);
 		Despesa despesa = new Despesa(4, 9.49, FormaDePagamento.CREDITO, new Date(), categoria, "WITCH IT");
-		AdicionarDespesa adicionarDespesa = new AdicionarDespesa();
+		AdicionarDespesa adicionarDespesa = new AdicionarDespesa(new DespesaException(null));
 		CategoriaService categoriaService = new CategoriaService(new CategoriaDaoJDBC());
 		
 		DespesaService despesaService = new DespesaService(new DespesaDaoJDBC(), categoriaService);

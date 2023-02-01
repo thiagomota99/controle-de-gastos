@@ -3,19 +3,20 @@ package br.com.thgyn.validadores;
 import br.com.thgyn.exceptions.CategoriaException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Categoria;
+import br.com.thgyn.utils.Objeto;
 
-public class AdicionarCategoria implements Validador<Categoria>{
+public class AdicionarCategoria implements Adicionavel<Categoria>{
 	
 	@Override
 	public void aplicar(Categoria t) {
 		EntidadeException categoriaException = new CategoriaException("Erro ao adicionar a categoria.");
-		if(t == null) {
+		if(Objeto.isNull(t)) {
 			categoriaException.addErro("Categoria não pode ser nulo.");
 			throw categoriaException;
 		}
-		if(t.getId() != null)
+		if(Objeto.isNotNull(t.getId()))
 			categoriaException.addErro("O id deve ser nulo.");
-		if(t.getNome() == null || t.getNome().trim().isEmpty())
+		if(Objeto.isEmpty(t.getNome()))
 			categoriaException.addErro("Nome não pode ser nulo/vazio.");
 		
 		if(categoriaException.getErros().size() > 0)

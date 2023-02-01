@@ -1,37 +1,69 @@
 package br.com.thgyn.validadores;
 
-import br.com.thgyn.exceptions.DespesaException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Despesa;
+import br.com.thgyn.utils.Objeto;
 
-public class AdicionarDespesa implements Validador<Despesa> {
+public class AdicionarDespesa implements Adicionavel<Despesa> {
+	EntidadeException despesaException;
 	
-	public AdicionarDespesa() {
-		
+	public AdicionarDespesa(EntidadeException exception) {
+		Objeto.notNullOrException(exception);
+		this.despesaException = exception;
 	}
 	
-	@Override
 	public void aplicar(Despesa t) {
-		EntidadeException despesaException = new DespesaException("Erro ao adicionar despesa.");
-		
-		if(t == null) {
-			despesaException.addErro("Objeto despesa não pode ser nulo.");
-			throw despesaException;
-		}
-		if(t.getId() != null)
-			despesaException.addErro("Id deve ser nulo.");
-		if(t.getDescricao() == null || t.getDescricao().trim().isEmpty())
-			despesaException.addErro("Descriação não pode ser nulo/vazio.");
-		if(t.getValor() == null || t.getValor().doubleValue() <= 0)
-			despesaException.addErro("Valor não pode ser nulo/menor ou igual a zero.");
-		if(t.getData() == null)
-			despesaException.addErro("Data não pode ser nulo.");
-		if(t.getFormaDePagamento() == null)
-			despesaException.addErro("Forma de pagamento não pode ser nulo.");
-		if(t.getCategoria() == null)
-			despesaException.addErro("Categoria não pode ser nulo.");
+		notNull(t, "Despesa");
+		nullable(t.getId(), "Id");
+		notEmpty(t.getDescricao(), "Descrição");
+		notNull(t.getValor(), "Valor");
+		isMenorOuIgualAZero(t.getValor(), "Valor");
+		notNull(t.getData(), "Data");
+		notNull(t.getFormaDePagamento(), "Forma de Pagamento");
+		notNull(t.getCategoria(), "Categoria");
 			
 		if(despesaException.getErros().size() > 0)
 			throw despesaException;
+	}
+	
+	private boolean notNull(Object obj, String atributo) {
+		Objeto.notNullOrException(atributo);
+		if(Objeto.isNull(obj)) {
+			String msg = "Objeto ".concat(atributo.concat(" não pode ser nulo."));
+			despesaException.addErro(msg);
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean nullable(Number obj, String atributo) {
+		Objeto.notNullOrException(atributo);
+		if(Objeto.isNotNull(obj)) {
+			String msg = "Objeto ".concat(atributo.concat(" deve ser nulo."));
+			despesaException.addErro(msg);
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean notEmpty(String obj, String atributo) {
+		Objeto.notNullOrException(atributo);
+		if(Objeto.isEmpty(obj)) {
+			String msg = "Objeto ".concat(atributo.concat(" não pode ser nulo/vazio."));
+			despesaException.addErro(msg);
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isMenorOuIgualAZero(Double obj, String atributo) {
+		Objeto.notNullOrException(atributo);
+		Objeto.notNullOrException(obj);
+		if(obj.doubleValue() <= 0) {
+			String msg = "Objeto ".concat(atributo.concat(" não pode ser menor ou igual a zero."));
+			despesaException.addErro(msg);
+			return true;
+		}
+		return false;
 	}
 }

@@ -11,6 +11,7 @@ import br.com.thgyn.exceptions.DbException;
 import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.utils.Objeto;
+import br.com.thgyn.validadores.Adicionavel;
 import br.com.thgyn.validadores.Validador;
 
 public class CategoriaService implements ServiceCRUD<Categoria> {
@@ -22,7 +23,7 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 		this.repository = repository;
 	}
 
-	public void adicionar(Categoria obj, Validador<Categoria> validacoes) {
+	public void adicionar(Categoria obj, Adicionavel<Categoria> validacoes) {
 		Connection connection = null;
 		try {
 			Objeto.notNullOrException(validacoes);
