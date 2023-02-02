@@ -1,8 +1,9 @@
-package br.com.thgyn.validadores;
+package br.com.thgyn.validadores.impl;
 
 import br.com.thgyn.exceptions.CategoriaException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Categoria;
+import br.com.thgyn.validadores.Validador;
 
 public class AtualizarCategoria implements Validador<Categoria> {
 	

@@ -1,4 +1,4 @@
-package br.com.thgyn.modelo.services;
+package br.com.thgyn.modelo.services.impl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -10,22 +10,24 @@ import br.com.thgyn.exceptions.CategoriaException;
 import br.com.thgyn.exceptions.DbException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Categoria;
+import br.com.thgyn.services.CategoriaService;
 import br.com.thgyn.utils.Objeto;
 import br.com.thgyn.validadores.Adicionavel;
 import br.com.thgyn.validadores.Validador;
 
-public class CategoriaService implements ServiceCRUD<Categoria> {
+public class CategoriaServiceImpl implements CategoriaService {
 
 	private CategoriaDAO repository;
 	private EntidadeException categoriaException;
 
-	public CategoriaService(CategoriaDAO repository) {
+	public CategoriaServiceImpl(CategoriaDAO repository) {
 		Objeto.notNullOrException(repository);
 		
 		this.repository = repository;
 		this.categoriaException = new CategoriaException("");
 	}
-
+	
+	@Override
 	public void adicionar(Categoria obj, Adicionavel<Categoria> validacoes) {
 		Connection connection = null;
 		Objeto.notNullOrException(validacoes);
@@ -36,15 +38,16 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 			repository.setConnection(connection);
 			repository.adicionar(obj);
 		} catch (DbException e) {
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			categoriaException.setStackTrace(e.getStackTrace());
 			categoriaException.addErro("Erro ao cadastrar a categoria. Por gentileza, tentar novamente.");
 			throw categoriaException;
 		} finally {
 			DB.closeConnection(connection);
 		}
 	}
-
+	
+	@Override
 	public List<Categoria> listar() {
 		Connection connection = null;
 		List<Categoria> categorias = new ArrayList<Categoria>();
@@ -53,8 +56,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 			repository.setConnection(connection);
 			categorias = repository.listar();
 		} catch (DbException e) {
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			categoriaException.setStackTrace(e.getStackTrace());
 			categoriaException.addErro("Erro ao listar as categorias. Por gentileza, tente novamente.");
 			throw categoriaException;
 		} finally {
@@ -62,7 +65,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 		}
 		return categorias;
 	}
-
+	
+	@Override
 	public Categoria buscar(Integer id) {
 		Connection connection = null;
 		Categoria categoria = null;
@@ -76,8 +80,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 			repository.setConnection(DB.getConnection());
 			categoria = repository.buscar(id);
 		} catch (DbException e) {
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			categoriaException.setStackTrace(e.getStackTrace());
 			categoriaException.addErro("Erro ao buscar a categoria. Por gentileza, tentar novamente.");
 			throw categoriaException;
 		} finally {
@@ -85,7 +89,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 		}
 		return categoria;
 	}
-
+	
+	@Override
 	public void atualizar(Categoria categoria, Validador<Categoria> validacoes) {
 		Connection connection = null;
 		Objeto.notNullOrException(validacoes);
@@ -95,8 +100,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 			repository.setConnection(DB.getConnection());
 			repository.atualizar(categoria);
 		} catch (DbException e) {
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			categoriaException.setStackTrace(e.getStackTrace());
 			categoriaException.addErro("Erro ao atualizar a categoria. Por gentileza, tente novamente.");
 			throw categoriaException;
 		} finally {
@@ -104,6 +109,7 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 		}
 	}
 
+	@Override
 	public void deletar(Integer id) {
 		Connection connection = null;
 		if(Objeto.isNull(id) || id <= 0) {
@@ -116,8 +122,8 @@ public class CategoriaService implements ServiceCRUD<Categoria> {
 			repository.setConnection(connection);
 			repository.deletar(id);
 		} catch (DbException e) {
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			categoriaException.setStackTrace(e.getStackTrace());
 			categoriaException.addErro("Erro ao deletar a categoria. Por gentileza, tente novamente.");
 			throw categoriaException;
 		} finally {

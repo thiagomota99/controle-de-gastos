@@ -1,4 +1,4 @@
-package br.com.thgyn.modelo.services;
+package br.com.thgyn.modelo.services.impl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -8,19 +8,23 @@ import br.com.thgyn.conexao.DB;
 import br.com.thgyn.dao.DespesaDAO;
 import br.com.thgyn.exceptions.DbException;
 import br.com.thgyn.exceptions.DespesaException;
-import br.com.thgyn.exceptions.EntityNotFoundException;
-import br.com.thgyn.modelo.entidades.Categoria;
+import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Despesa;
+import br.com.thgyn.services.CategoriaService;
+import br.com.thgyn.services.DespesaService;
 import br.com.thgyn.utils.Objeto;
-import br.com.thgyn.validadores.Adicionavel;
+import br.com.thgyn.validadores.AdicionarDespesa;
 import br.com.thgyn.validadores.Validador;
 
-public class DespesaService implements ServiceCRUD<Despesa> {
+public class DespesaServiceImpl implements DespesaService {
 	
 	private DespesaDAO repository;
-	private ServiceCRUD<Categoria> categoriaService;
+	private CategoriaService categoriaService;
+	private EntidadeException despesaException = new DespesaException(null);
 	
-	public DespesaService(DespesaDAO repository, ServiceCRUD<Categoria> categoriaService) {
+	private final String MSG_ERRO = "Houve um erro. Por gentileza, tente novamente ou informe o administrador do sistema.";
+	
+	public DespesaServiceImpl(DespesaDAO repository, CategoriaService categoriaService) {
 		Objeto.notNullOrException(repository);
 		Objeto.notNullOrException(categoriaService);
 		
@@ -28,33 +32,39 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 		this.repository = repository;
 	}
 	
-	public void adicionar(Despesa despesa, Adicionavel<Despesa> validacoes) {
+	@Override
+	public void adicionar(Despesa obj, AdicionarDespesa validacoes) {
 		Connection connection = null;
+		Objeto.notNullOrException(validacoes);
+		validacoes.aplicar(obj, categoriaService);
+		
 		try {
-			Objeto.notNullOrException(validacoes);
-			validacoes.aplicar(despesa);
-			Objeto.notNullOrException(categoriaService.buscar(despesa.getCategoria().getId()));
 			connection = DB.getConnection();
 			repository.setConnection(connection);
-			repository.adicionar(despesa);			
-		} catch (NullPointerException | DbException e) {
+			repository.adicionar(obj);			
+		} catch (DbException e) {
 			System.out.println(e.getMessage());
-		} catch (DespesaException e) {
-			e.getErros().forEach(erro -> System.out.println(erro));
+			despesaException.setStackTrace(e.getStackTrace());
+			despesaException.addErro(MSG_ERRO);
+			throw despesaException;
 		} finally {
 			DB.closeConnection(connection);
 		}
-	}
+	}	
 
 	@Override
 	public List<Despesa> listar() {
 		Connection connection = null;
 		List<Despesa> despesas = new ArrayList<Despesa>();
+		
 		try {
 			repository.setConnection(DB.getConnection());
 			despesas = repository.listar();
-		} catch (DbException | EntityNotFoundException e) {
+		} catch (DbException e) {
 			System.out.println(e.getMessage());
+			despesaException.setStackTrace(e.getStackTrace());
+			despesaException.addErro(MSG_ERRO);
+			throw despesaException;
 		}
 		finally {
 			DB.closeConnection(connection);			
@@ -66,15 +76,20 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	public Despesa buscar(Integer id) {
 		Connection connection = null;
 		Despesa despesa = null;
+		Objeto.notNullOrException(id);
+		Objeto.notLessEqualZeroOrException(id);		
+		
 		try {
-			Objeto.notNullOrException(id);
-			Objeto.notLessEqualZeroOrException(id);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			despesa = repository.buscar(id);
 		}
-		catch (DbException | EntityNotFoundException | NullPointerException | IllegalArgumentException e) {
+		catch (DbException e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
+			despesaException.setStackTrace(e.getStackTrace());
+			despesaException.addErro(MSG_ERRO);
+			throw despesaException;
 		}
 		finally {
 			DB.closeConnection(connection);
@@ -85,36 +100,39 @@ public class DespesaService implements ServiceCRUD<Despesa> {
 	@Override
 	public void atualizar(Despesa despesa, Validador<Despesa> validacoes) {
 		Connection connection = null;
+		Objeto.notNullOrException(validacoes);
+		validacoes.aplicar(despesa);
+		
 		try {
-			Objeto.notNullOrException(validacoes);
-			validacoes.aplicar(despesa);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			repository.atualizar(despesa);
-		} catch (DbException | NullPointerException e) {
+		} catch (DbException e) {
 			System.out.println(e.getMessage());
-		}
-		catch (DespesaException e) {
-			e.getErros().forEach(erro -> System.out.println(erro));
-		}
-		finally {
+			despesaException.setStackTrace(e.getStackTrace());
+			despesaException.addErro(MSG_ERRO);
+			throw despesaException;
+		} finally {
 			DB.closeConnection(connection);
 		}		
 	}
 
 	@Override
 	public void deletar(Integer id) {
-		Connection connection = null;		
+		Connection connection = null;
+		Objeto.notNullOrException(id);
+		Objeto.notLessEqualZeroOrException(id);
+		
 		try {
-			Objeto.notNullOrException(id);
-			Objeto.notLessEqualZeroOrException(id);
 			connection = DB.getConnection();
 			repository.setConnection(connection);
 			repository.deletar(id);
-		} catch (NullPointerException | IllegalArgumentException | DbException e) {
+		} catch (DbException e) {
 			System.out.println(e.getMessage());
-		}
-		finally {
+			despesaException.setStackTrace(e.getStackTrace());
+			despesaException.addErro(MSG_ERRO);
+			throw despesaException;
+		} finally {
 			DB.closeConnection(connection);
 		}
 	}

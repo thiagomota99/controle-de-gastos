@@ -4,20 +4,20 @@ import br.com.thgyn.dao.CategoriaDaoJDBC;
 import br.com.thgyn.exceptions.CategoriaException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Categoria;
-import br.com.thgyn.modelo.services.CategoriaService;
-import br.com.thgyn.modelo.services.ServiceCRUD;
-import br.com.thgyn.validadores.AdicionarCategoria;
-import br.com.thgyn.validadores.AtualizarCategoria;
+import br.com.thgyn.modelo.services.impl.CategoriaServiceImpl;
+import br.com.thgyn.services.ServiceCRUD;
+import br.com.thgyn.validadores.impl.AdicionarCategoriaImp;
+import br.com.thgyn.validadores.impl.AtualizarCategoria;
 
 public class TesteCategoria {
 	
-	private static ServiceCRUD<Categoria> categoriaService = new CategoriaService(new CategoriaDaoJDBC());
+	private static ServiceCRUD<Categoria> categoriaService = new CategoriaServiceImpl(new CategoriaDaoJDBC());
 	
 	public static void main(String[] args) {
-		//TesteCategoria.adicionar();
-		//TesteCategoria.listar();
-		//TesteCategoria.buscar();
-		//TesteCategoria.atualizar();
+		TesteCategoria.adicionar();
+		TesteCategoria.listar();
+		TesteCategoria.buscar();
+		TesteCategoria.atualizar();
 		TesteCategoria.deletar();
 	}
 	
@@ -25,12 +25,12 @@ public class TesteCategoria {
 		Categoria categoria = new Categoria(null, "Saúde");
 		
 		try {
-			categoriaService.adicionar(categoria, new AdicionarCategoria());
+			categoriaService.adicionar(categoria, new AdicionarCategoriaImp());
 		} catch (EntidadeException e) {
 			e.getErros().forEach(erro -> System.out.println(erro));
 		}
 		catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class TesteCategoria {
 		} catch (CategoriaException e) {
 			e.getErros().forEach(erro -> System.out.println(erro));
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class TesteCategoria {
 		} catch (CategoriaException e) {
 			e.getErros().forEach(erro -> System.out.println(erro));
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class TesteCategoria {
 		} catch (CategoriaException e) {
 			e.getErros().forEach(erro -> System.out.println(erro));
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}		
 	}
 	
@@ -70,7 +70,7 @@ public class TesteCategoria {
 		} catch (CategoriaException e) {
 			e.getErros().forEach(erro -> System.out.println(erro));
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}		
 	}	
 }

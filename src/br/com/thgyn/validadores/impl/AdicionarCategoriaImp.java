@@ -1,11 +1,12 @@
-package br.com.thgyn.validadores;
+package br.com.thgyn.validadores.impl;
 
 import br.com.thgyn.exceptions.CategoriaException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.utils.Objeto;
+import br.com.thgyn.validadores.Adicionavel;
 
-public class AdicionarCategoria implements Adicionavel<Categoria>{
+public class AdicionarCategoriaImp implements Adicionavel<Categoria> {
 	
 	@Override
 	public void aplicar(Categoria t) {

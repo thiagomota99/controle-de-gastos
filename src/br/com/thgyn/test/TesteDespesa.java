@@ -8,25 +8,89 @@ import br.com.thgyn.enums.FormaDePagamento;
 import br.com.thgyn.exceptions.DespesaException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
-import br.com.thgyn.modelo.services.CategoriaService;
-import br.com.thgyn.modelo.services.DespesaService;
-import br.com.thgyn.validadores.AdicionarDespesa;
-import br.com.thgyn.validadores.AtualizarDespesa;
+import br.com.thgyn.modelo.services.impl.CategoriaServiceImpl;
+import br.com.thgyn.modelo.services.impl.DespesaServiceImpl;
+import br.com.thgyn.services.Atualizavel;
+import br.com.thgyn.services.Buscavel;
+import br.com.thgyn.services.CategoriaService;
+import br.com.thgyn.services.Deletavel;
+import br.com.thgyn.services.DespesaService;
+import br.com.thgyn.services.Listavel;
+import br.com.thgyn.validadores.impl.AdicionarDespesaImpl;
+import br.com.thgyn.validadores.impl.AtualizarDespesa;
 
 public class TesteDespesa {
 	
+	private static CategoriaService categoriaService = new CategoriaServiceImpl(new CategoriaDaoJDBC());
+	private static DespesaService despesaService = new DespesaServiceImpl(new DespesaDaoJDBC(), categoriaService);
+	
 	public static void main(String[] args) {
+		TesteDespesa.adicionar();
+		//TesteDespesa.listar();
+		//TesteDespesa.buscar();
+		//TesteDespesa.atualizar();
+		//TesteDespesa.deletar();
+	}
+	
+	public static void adicionar() {
 		Categoria categoria = new Categoria(41, null);
-		Despesa despesa = new Despesa(4, 9.49, FormaDePagamento.CREDITO, new Date(), categoria, "WITCH IT");
-		AdicionarDespesa adicionarDespesa = new AdicionarDespesa(new DespesaException(null));
-		CategoriaService categoriaService = new CategoriaService(new CategoriaDaoJDBC());
+		Despesa despesa = new Despesa(null, 9.40, FormaDePagamento.CREDITO, new Date(), categoria, "TESTE");
 		
-		DespesaService despesaService = new DespesaService(new DespesaDaoJDBC(), categoriaService);
+		try {
+			despesaService.adicionar(despesa, new AdicionarDespesaImpl(new DespesaException(null)));
+		} catch (DespesaException e) {
+			e.getErros().forEach(erro -> System.out.println(erro));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void listar() {
+		Listavel<Despesa> despesas = despesaService;
 		
-		//despesaService.adicionar(despesa, adicionarDespesa);
-		//despesaService.listar().forEach(item -> System.out.println(item));
-		//System.out.println(despesaService.buscar(4));
-		//despesaService.atualizar(despesa, new AtualizarDespesa());
-		//despesaService.deletar(7);
+		try {
+			despesas.listar().forEach(despesa -> System.out.println(despesa));
+		} catch (DespesaException e) {
+			e.getErros().forEach(erro -> System.out.println(erro));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void buscar() {
+		Buscavel<Despesa> despesa = despesaService;
+		
+		try {
+			despesa.buscar(42);
+		} catch (DespesaException e) {
+			e.getErros().forEach(erro -> System.out.println(erro));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void atualizar() {
+		Despesa obj = new Despesa(null, 9.40, FormaDePagamento.CREDITO, new Date(), null, "TESTE");
+		Atualizavel<Despesa> despesa = despesaService;
+		
+		try {
+			despesa.atualizar(obj, new AtualizarDespesa());
+		} catch (DespesaException e) {
+			e.getErros().forEach(erro -> System.out.println(erro));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void deletar() {
+		Deletavel despesa = despesaService;
+		
+		try {
+			despesa.deletar(99);
+		} catch (DespesaException e) {
+			e.getErros().forEach(erro -> System.out.println(erro));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

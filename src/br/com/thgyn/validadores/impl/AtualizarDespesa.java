@@ -1,8 +1,9 @@
-package br.com.thgyn.validadores;
+package br.com.thgyn.validadores.impl;
 
 import br.com.thgyn.exceptions.DespesaException;
 import br.com.thgyn.exceptions.EntidadeException;
 import br.com.thgyn.modelo.entidades.Despesa;
+import br.com.thgyn.validadores.Validador;
 
 public class AtualizarDespesa implements Validador<Despesa> {
 

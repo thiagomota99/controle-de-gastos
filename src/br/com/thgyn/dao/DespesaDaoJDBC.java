@@ -14,7 +14,6 @@ import java.util.Map;
 import br.com.thgyn.conexao.DB;
 import br.com.thgyn.enums.FormaDePagamento;
 import br.com.thgyn.exceptions.DbException;
-import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
 import br.com.thgyn.modelo.entidades.Despesa;
 import br.com.thgyn.utils.Objeto;
@@ -44,7 +43,7 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro! Nenhuma linha foi afetada!");
+				throw new DbException("Erro! Nenhuma linha foi afetada. Objeto: " + obj);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -61,12 +60,8 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			preparedStatement = connection.prepareStatement(listarDespeasSQL());
 			resultSet = preparedStatement.executeQuery();
 			
-			if(resultSet.next())
-				do 
-					despesas.add(criarObejtoDespesa());
-				while (resultSet.next());
-			else
-				throw new EntityNotFoundException("Não existe nenhuma despesa cadastrada.");			
+			while (resultSet.next())
+				despesas.add(criarObejtoDespesa());		
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -99,8 +94,6 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			resultSet = preparedStatement.executeQuery();
 			if(resultSet.next()) 
 				despesa = criarObejtoDespesa();
-			else
-				throw new EntityNotFoundException("Nenhuma despesa cadastrada com esse id.");
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -134,7 +127,7 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro! Nenhuma linha afetada.");
+				throw new DbException("Erro! Nenhuma linha afetada. Objeto: " + obj);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -154,7 +147,7 @@ public class DespesaDaoJDBC implements DespesaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro! Nenhuma linha afetada.");
+				throw new DbException("Erro! Nenhuma linha afetada. Id: " + id);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
