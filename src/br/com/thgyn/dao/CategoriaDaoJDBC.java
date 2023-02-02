@@ -10,8 +10,8 @@ import java.util.List;
 
 import br.com.thgyn.conexao.DB;
 import br.com.thgyn.exceptions.DbException;
-import br.com.thgyn.exceptions.EntityNotFoundException;
 import br.com.thgyn.modelo.entidades.Categoria;
+import br.com.thgyn.utils.Objeto;
 
 public class CategoriaDaoJDBC implements CategoriaDAO {
 	
@@ -31,7 +31,7 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro! Nenhuma linha foi afetada!");
+				throw new DbException("Erro! Nenhuma linha foi afetada. Objeto: " + obj);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -47,12 +47,8 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 		try {
 			preparedStatement = connection.prepareStatement("SELECT * FROM CATEGORIA");
 			resultSet = preparedStatement.executeQuery();
-			if(!resultSet.next())
-				throw new EntityNotFoundException("Não existe nenhuma categoria.");
-			else
-				do
-					lista.add(new Categoria(resultSet.getInt("ID"), resultSet.getString("DESCRICAO")));
-				while(resultSet.next());										
+			while(resultSet.next())
+				lista.add(new Categoria(resultSet.getInt("ID"), resultSet.getString("DESCRICAO")));									
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -72,8 +68,6 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			resultSet = preparedStatement.executeQuery();
 			if(resultSet.next()) 
 				return new Categoria(resultSet.getInt("ID"), resultSet.getString("DESCRICAO"));
-			else
-				throw new EntityNotFoundException("Não foi encontrada nenhuma categoria com o ID " + id);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -81,6 +75,7 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			DB.closeStatement(preparedStatement);
 			DB.closeResultSet(resultSet);
 		}
+		return null;
 	}
 
 	@Override
@@ -94,7 +89,7 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro! Nenhuma linha afetada.");
+				throw new DbException("Erro! Nenhuma linha afetada. Objeto: " + obj);
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
@@ -112,14 +107,14 @@ public class CategoriaDaoJDBC implements CategoriaDAO {
 			
 			int linhasAfetadas = preparedStatement.executeUpdate();
 			if(linhasAfetadas == 0)
-				throw new DbException("Erro! Nenhuma linha afetada!");			
+				throw new DbException("Erro! Nenhuma linha afetada. Id: " + id);			
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
 	}
 	
-	public void setConnection(Connection connection){
-		if(connection == null)
+	public void setConnection(Connection connection) {
+		if(Objeto.isNull(connection))
 			throw new NullPointerException("Objeto connection não pode ser nulo.");
 		this.connection = connection;
 	}
