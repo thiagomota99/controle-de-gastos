@@ -18,8 +18,9 @@ public class AdicionarDespesaImpl implements AdicionarDespesa {
 	@Override
 	public void aplicar(Despesa t, CategoriaService serviceCategoria) {
 		Objeto.notNullOrException(serviceCategoria);
+		Objeto.notNullOrException(t);
+			
 		validarObjeto(t);
-		
 		if(Objeto.isNull(t.getCategoria().getId()) || t.getCategoria().getId() <= 0)
 			despesaException.addErro("Objeto Id da categoria não pode ser nulo/menor ou igual a zero.");
 		else if(Objeto.isNull(serviceCategoria.buscar(t.getCategoria().getId()))) {
@@ -31,7 +32,6 @@ public class AdicionarDespesaImpl implements AdicionarDespesa {
 	}
 	
 	private void validarObjeto(Despesa t) {
-		notNull(t, "Despesa");
 		nullable(t.getId(), "Id");
 		notEmpty(t.getDescricao(), "Descrição");
 		notNull(t.getValor(), "Valor");
