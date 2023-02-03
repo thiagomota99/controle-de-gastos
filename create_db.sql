@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `controle_de_gasto` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `controle_de_gasto`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: localhost    Database: controle_de_gasto
@@ -26,7 +28,7 @@ CREATE TABLE `categoria` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `DESCRICAO` varchar(100) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +59,7 @@ CREATE TABLE `despesa` (
   KEY `CATEGORIA_ID` (`CATEGORIA_ID`),
   CONSTRAINT `despesa_ibfk_1` FOREIGN KEY (`FORMA_PAGAMENTO_ID`) REFERENCES `forma_pagamento` (`ID`),
   CONSTRAINT `despesa_ibfk_2` FOREIGN KEY (`CATEGORIA_ID`) REFERENCES `categoria` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,4 +104,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-28 21:25:07
+-- Dump completed on 2023-02-03 15:24:31
